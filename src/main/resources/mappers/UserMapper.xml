@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+  <mapper namespace="UserMapper">
+  	<insert id="insert" parameterType="UserDTO">
+  		insert into bbs_user values(#{id},#{pw},#{repw},#{name},#{address},#{phonenum},#{email})
+  	</insert>
+  	<update id="updatemy" parameterType="UserDTO">
+  		update bbs_user
+			set pw = #{pw}, 
+			address = #{address}, 
+			phonenum = #{phonenum}, 
+			email = #{email} 
+			where id = #{id}
+  	</update>
+  	<delete id="deletemy" parameterType="String">
+  		delete from bbs_user where id = #{id}
+  	</delete>
+  	<delete id="deleteboardmy" parameterType="String">
+  		delete from bbs_board where userid = #{id}
+  	</delete>
+  	<select id="selectone" parameterType="string" resultType="int">
+		select count(*) from bbs_user where id = #{id}
+  	</select>
+  	<select id="selectpw" parameterType="String" resultType="string">
+  		select pw from bbs_user where id = #{id}
+  	</select>
+  	<select id="selectmy" parameterType="string" resultType="UserDTO">
+  		select * from bbs_user where id = #{id}
+  	</select>
+  	<select id="selectall" resultType="UserDTO">
+  		select * from bbs_user
+  	</select>
+  	<select id="selectid" parameterType="string" resultType="String">
+  		select id from bbs_user where phonenum =#{phonenum}
+  	</select>
+  	
+  </mapper>

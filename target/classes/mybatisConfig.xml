@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="org.spring.dto.BoardDTO" alias="BoardDTO"/>		
+		<typeAlias type="org.spring.dto.PageDTO" alias="PageDTO"/>		
+		<typeAlias type="org.spring.dto.ItemDTO" alias="ItemDTO"/>		
+		<typeAlias type="org.spring.dto.SearchDTO" alias="SearchDTO"/>		
+		<typeAlias type="org.spring.dto.UserDTO" alias="UserDTO"/>
+	</typeAliases>
+	
+</configuration>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+  <mapper namespace="ItemMapper">
+  	<insert id="insert" parameterType="ItemDTO">
+  		insert into bbsitem(seq,category,itemname,itemsize,itemprice,itemcolor,itemimage) 
+			values((select ifnull(max(seq)+1,1) from bbsitem b),#{category},#{itemname},#{itemsize},#{itemprice},#{itemcolor},#{itemimage})
+  	</insert>
+  	<select id="selectall" parameterType="PageDTO" resultType="ItemDTO">
+  		<choose>
+  			<when test="findKey =='all'"> 
+				select * from bbsitem order by seq desc limit ${startNo},12
+  			</when>
+  			<when test="findKey =='' ">
+  				select * from bbsitem where itemname like '%${findValue}%' order by seq desc limit ${startNo},12
+  			</when>
+  			<otherwise>
+  				select *from 
+				(select * from bbsitem where category = #{findKey} order by seq desc) b
+				limit ${startNo},12
+  			</otherwise>
+  		</choose>
+  	</select>
+  	<select id="selectsearchcount" resultType="int" parameterType="string">
+  		select num from bbs_search where name=#{findValue}
+  	</select>
+  	<update id="searchcount" parameterType="string">
+  		update bbs_search 
+		set num= num+1
+		where name=#{findValue}
+  	</update>
+  	<update id="insertsearchcount" parameterType="string">
+  		insert into bbs_search values(#{findValue},1)
+  	</update>
+  	<delete id="delete" parameterType="int">
+  		delete from bbsitem where seq= ${seq}
+  	</delete>
+  	<update id="update" parameterType="ItemDTO">
+  		update bbsitem set itemname = #{itemname},
+  				category  = #{category}, 
+				itemsize  = #{itemsize}, 
+				itemprice = #{itemprice}, 
+				itemcolor = #{itemcolor}, 
+				itemimage = #{itemimage} 
+				where seq = ${seq}
+  	</update>
+  	<select id="selectone" parameterType="int" resultType="ItemDTO">
+  		select * from bbsitem where seq = #{seq}
+  	</select>
+  	<select id="searchselect" resultType="SearchDto">
+  		select * from bbs_search order by num desc
+  	</select>
+  	<select id="totcount" parameterType="PageDTO" resultType="int">
+  		<choose>
+  			<when test="findKey =='all'">
+  				select count(*) cnt from bbsitem
+  			</when>
+  			<when test="findKey =='' ">
+  				select count(*) cnt from bbsitem where itemname like '%${findValue}%'
+  			</when>
+  			<otherwise>
+  				select count(*) cnt from bbsitem where category = #{findKey}
+  			</otherwise>
+  		</choose>
+  	</select>
+  </mapper>

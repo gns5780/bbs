@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+  <mapper namespace="ItemMapper">
+  	<delete id="delete" parameterType="int">
+  		delete bbsitem where seq= #{seq}
+  	</delete>
+  	<insert id="insert" parameterType="ItemDTO">
+  		insert into bbsitem(seq,category,itemname,itemsize,itemprice,itemcolor,itemimage) 
+			values((select nvl(max(seq)+1,1) from bbsitem),#{category},#{itemname},#{itemsize},#{itemprice},#{itemcolor},#{itemimage})
+  	</insert>
+  	<update id="update" parameterType="ItemDTO">
+  		update bbsitem set itemname = #{itemname},
+  				category  = #{category}, 
+				itemsize  = #{itemsize}, 
+				itemprice = #{itemprice}, 
+				itemcolor = #{itemcolor}, 
+				itemimage = #{itemimage} 
+				where seq = ${seq}
+  	</update>
+  	<select id="selectone" parameterType="int" resultType="ItemDTO">
+  		select * from bbsitem where seq = #{seq}
+  	</select>
+  	<select id="searchselect" resultType="SearchDto">
+  		select * from bbs_search order by num desc
+  	</select>
+  	<update id="searchcount" parameterType="string" statementType="CALLABLE">
+  		CALL searchcount(#{findvalue})
+  	</update>
+  	<select id="selectall" parameterType="PageDTO" resultType="ItemDTO">
+  		<choose>
+  			<when test="findKey =='all'">
+  				select *from 
+				(select rownum rn, b.* from(select * from bbsitem order by seq desc) b) 
+				where rn between ${startNo} and ${endNo}
+  			</when>
+  			<when test="findKey =='' ">
+  				select *from 
+				(select rownum rn, b.* from(select * from bbsitem 
+				where itemname 
+				like '%' || #{findValue} || '%' 
+				order by seq desc) b) b 
+				where rn between ${startNo} and ${endNo}
+  			</when>
+  			<otherwise>
+  				select *from 
+				(select rownum rn, b.* from(select * from bbsitem where category = #{findKey} order by seq desc) b) b 
+				where rn between ${startNo} and ${endNo}
+  			</otherwise>
+  		</choose>
+  	</select>
+  	<select id="totcount" parameterType="PageDTO" resultType="int">
+  		<choose>
+  			<when test="findKey =='all'">
+  				select count(*) cnt from bbsitem
+  			</when>
+  			<when test="findKey =='' ">
+  				select count(*) cnt from bbsitem where itemname like '%' || #{findValue} || '%'
+  			</when>
+  			<otherwise>
+  				select count(*) cnt from bbsitem where category = #{findKey}
+  			</otherwise>
+  		</choose>
+  	</select>
+  </mapper>
